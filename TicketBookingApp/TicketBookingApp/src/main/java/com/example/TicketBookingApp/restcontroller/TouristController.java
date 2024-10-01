@@ -5,9 +5,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -55,7 +58,37 @@ public class TouristController {
 		}
 	}
 	
-	
+	@PutMapping("/updateTourist") //put mapping when you want to update everything
+	public ResponseEntity<String> updateTouristInfo(@RequestBody Tourist tourist){
+		try {
+			String msg=service.updateTouristInfo(tourist);
+			return new ResponseEntity<String>(msg, HttpStatus.OK);
+			
+		}catch(TouristNotFoundException e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
 	
 
+	@PatchMapping("/updateBudget/{id}/{budget}") //patch mapping when you want to update one particular item
+	public ResponseEntity<String> updateBudget(@PathVariable("id") Integer id,@PathVariable("budget") Double budget){ //not adding path variable because id matches the name given
+		try {
+			String msg=service.updateTouristInfoByID(id, budget);
+			return new ResponseEntity<String>(msg, HttpStatus.OK);
+			
+		}catch(TouristNotFoundException e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@DeleteMapping("/deleteTouristInfo/{id}")
+	public ResponseEntity<String> deleteTourist(@PathVariable Integer id){
+		try {
+			String msg=service.deleteTouristByID(id);
+			return new ResponseEntity<String>(msg, HttpStatus.OK);	
+		}catch(TouristNotFoundException e) {
+			return new ResponseEntity<String>(e.getMessage(),HttpStatus.BAD_REQUEST );
+		}
+		
+	}
 }
